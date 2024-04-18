@@ -1,13 +1,10 @@
-import { OrganizationSwitcher, SignOutButton, SignedIn, auth } from "@clerk/nextjs";
+import { OrganizationSwitcher, SignOutButton, SignedIn } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { dark } from "@clerk/themes";
+
 
 export default async function Topbar() {
-    const { userId } = auth();
-    if (!userId) {
-        return <div>nooooooooo</div>
-    }
-
     return (
         <nav className="topbar">
             <Link href='/' className="flex items-center gap-4">
@@ -35,15 +32,14 @@ export default async function Topbar() {
                         </SignOutButton>
                     </SignedIn>
                 </div>
-                <div className="bg-red-50">
-                    <OrganizationSwitcher
+                    <OrganizationSwitcher 
                         appearance={{
+                            baseTheme: dark,
                             elements: {
-                                organizationSwitcherTrigger: "py-2 px-4 bg-dark-2 rounded-none hover:bg-dark-3 text-white"
+                                organizationSwitcherTrigger: "py-2 px-4"
                             }
                         }}
                     />
-                </div>
             </div>
         </nav>
     )

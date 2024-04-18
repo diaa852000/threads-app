@@ -16,7 +16,7 @@ export default function LeftSidebar() {
 
     return (
         <section className="custom-scrollbar leftsidebar">
-            <div className="flex flex-1 flex-col gap-6 px-6 w-full">
+            <div className="flex flex-1 flex-col gap-6 pl-5 pr-6 w-full">
                 {sidebarLinks.map((link) => {
                     const isActive = (pathname.includes(link.route) && link.route.length > 1) || pathname === link.route;
 
@@ -40,7 +40,7 @@ export default function LeftSidebar() {
             <div className="mt-10 px-6">
                 <SignedIn>
                     <SignOutButton signOutCallback={signOutCallback}>
-                        <div className="flex cursor-pointer gap-4 p-4">
+                        <div className="flex cursor-pointer gap-4 pl-3 pr-4">
                             <Image
                                 src={'/assets/logout.svg'}
                                 alt="logout"
