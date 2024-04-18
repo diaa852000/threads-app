@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod';
@@ -33,6 +33,8 @@ type props = {
 }
 
 const AccountProfile = ({ user, btnTitle }: props) => {
+    const [files, setFiles] = useState<File[]>([]);
+
     const defaultValues = {
         profile_photo: user?.image || '',
         name: user?.name || '',
@@ -40,9 +42,25 @@ const AccountProfile = ({ user, btnTitle }: props) => {
         bio: user?.bio || ''
     }
 
-    const handleImage = (e: ChangeEvent, fieldChange: (value: string) => void) => {
-        e.preventDefault();
+    const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+        e.preventDefault(); 
 
+        const fileReader = new FileReader();
+
+        if(e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0]
+
+            setFiles(Array.from(e.target.files));
+
+            if(!file.type.includes('image')) return;
+
+            fileReader.onload = async (e) => {
+                const imageDataUrl = e.target?.result?.toString() || '';
+                fieldChange(imageDataUrl);
+            }
+
+            fileReader.readAsDataURL(file);
+        }
     }
 
     function onSubmit(values: z.infer<typeof UserValidation>) {
@@ -58,7 +76,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col justify-start gap-10"
+                className="flex flex-col justify-start gap-7"
             >
                 <FormField
                     control={form.control}
@@ -103,7 +121,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                     name="name"
                     render={({ field }) => (
                         <FormItem className='flex flex-col gap-3 w-full'>
-                            <FormLabel className='capitalize text-base-semibold text-light-2'>
+                            <FormLabel className='capitalize text-base-semibold text-light-2 pl-1.5'>
                                 name
                             </FormLabel>
                             <FormControl>
@@ -122,7 +140,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                     name="username"
                     render={({ field }) => (
                         <FormItem className='flex flex-col gap-3 w-full'>
-                            <FormLabel className='capitalize text-base-semibold text-light-2'>
+                            <FormLabel className='capitalize text-base-semibold text-light-2 pl-1.5'>
                                 username
                             </FormLabel>
                             <FormControl>
@@ -141,7 +159,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                     name="bio"
                     render={({ field }) => (
                         <FormItem className='flex flex-col gap-3 w-full'>
-                            <FormLabel className='capitalize text-base-semibold text-light-2'>
+                            <FormLabel className='capitalize text-base-semibold text-light-2 pl-1.5'>
                                 bio
                             </FormLabel>
                             <FormControl>
