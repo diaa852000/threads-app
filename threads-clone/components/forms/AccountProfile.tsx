@@ -19,6 +19,9 @@ import { UserValidation } from '@/lib/validations/user';
 
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { isBase64Image } from '@/lib/utils';
+import { useUploadThing } from '@/lib/uploadthing'
+
 
 type props = {
     user: {
@@ -34,6 +37,7 @@ type props = {
 
 const AccountProfile = ({ user, btnTitle }: props) => {
     const [files, setFiles] = useState<File[]>([]);
+    const {startUpload} = useUploadThing("media");
 
     const defaultValues = {
         profile_photo: user?.image || '',
@@ -43,16 +47,16 @@ const AccountProfile = ({ user, btnTitle }: props) => {
     }
 
     const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const fileReader = new FileReader();
 
-        if(e.target.files && e.target.files.length > 0) {
+        if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0]
 
             setFiles(Array.from(e.target.files));
 
-            if(!file.type.includes('image')) return;
+            if (!file.type.includes('image')) return;
 
             fileReader.onload = async (e) => {
                 const imageDataUrl = e.target?.result?.toString() || '';
@@ -63,8 +67,20 @@ const AccountProfile = ({ user, btnTitle }: props) => {
         }
     }
 
-    function onSubmit(values: z.infer<typeof UserValidation>) {
-        console.log(values)
+    const onSubmit = async (values: z.infer<typeof UserValidation>) => {
+        const blob = values.profile_photo;
+
+        const hasImageChanged = isBase64Image(blob);
+
+        if (hasImageChanged) {
+            const imgRes = await startUpload(files);
+            
+            if(imgRes && imgRes[0].url) {
+                values.profile_photo = imgRes[0].url;
+            }
+        }
+
+        // TODO: Update user profile.
     }
 
     const form = useForm({
