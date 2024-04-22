@@ -38,7 +38,7 @@ type props = {
 
 const AccountProfile = ({ user, btnTitle }: props) => {
     const [files, setFiles] = useState<File[]>([]);
-    const {startUpload} = useUploadThing("media");
+    const { startUpload } = useUploadThing("media");
     const router = useRouter();
     const pathname = usePathname();
 
@@ -77,8 +77,8 @@ const AccountProfile = ({ user, btnTitle }: props) => {
 
         if (hasImageChanged) {
             const imgRes = await startUpload(files);
-            
-            if(imgRes && imgRes[0].url) {
+
+            if (imgRes && imgRes[0].url) {
                 values.profile_photo = imgRes[0].url;
             }
         }
@@ -92,7 +92,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
             path: pathname
         });
 
-        if(pathname === '/profile/edit') {
+        if (pathname === '/profile/edit') {
             router.back();
         } else {
             router.push('/');
@@ -144,6 +144,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                                     onChange={e => handleImage(e, field.onChange)}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -163,6 +164,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                                     {...field}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -182,6 +184,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                                     {...field}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -201,6 +204,7 @@ const AccountProfile = ({ user, btnTitle }: props) => {
                                     {...field}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
